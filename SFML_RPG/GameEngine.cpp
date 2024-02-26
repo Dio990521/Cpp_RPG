@@ -2,7 +2,24 @@
 
 void GameEngine::initWindow()
 {
-	this->window = new sf::RenderWindow(sf::VideoMode(1280, 720), "Chengzhang Dong's mini C++ RPG");
+    std::ifstream ifs("Configs/window.ini");
+
+    std::string title = "None";
+    sf::VideoMode windowBounds(800, 600);
+    unsigned frameRateLimit = 120;
+    bool verticalSyncEnabled = false;
+    if (ifs.is_open())
+    {
+        std::getline(ifs, title);
+        ifs >> windowBounds.width >> windowBounds.height;
+        ifs >> frameRateLimit;
+        ifs >> verticalSyncEnabled;
+    }
+    ifs.close();
+
+	this->window = new sf::RenderWindow(windowBounds, title);
+    this->window->setFramerateLimit(frameRateLimit);
+    this->window->setVerticalSyncEnabled(verticalSyncEnabled);
 }
 
 GameEngine::GameEngine()
@@ -13,6 +30,12 @@ GameEngine::GameEngine()
 GameEngine::~GameEngine() 
 {
 	delete this->window;
+}
+
+/*Update the deltaTime with the time it takes to update and render one frame*/
+void GameEngine::updateDeltaTime()
+{
+    this->deltaTime = this->deltaTimeClock.restart().asSeconds();
 }
 
 void GameEngine::updateSFMLEvents()
@@ -40,6 +63,7 @@ void GameEngine::run()
 {
     while (this->window->isOpen())
     {
+        this->updateDeltaTime();
         this->update();
         this->render();
     }

@@ -1,15 +1,8 @@
 #ifndef GAME_H
 #define GAME_H
 
-#include<ctime>
-#include<cstdlib>
-#include<iostream>
+#include "State.h"
 
-#include"SFML\Graphics.hpp"
-#include"SFML\Audio.hpp"
-#include"SFML\System.hpp"
-#include"SFML\Window.hpp"
-#include"SFML\Network.hpp"
 
 class GameEngine
 {
@@ -18,6 +11,9 @@ private:
 	sf::RenderWindow* window;
 	sf::Event sfEvent;
 
+	sf::Clock deltaTimeClock;
+	float deltaTime;
+
 	void initWindow();
 
 public:
@@ -25,6 +21,7 @@ public:
 	virtual ~GameEngine();
 
 	//Functions
+	void updateDeltaTime();
 	void updateSFMLEvents();
 	void update();
 	void render();
