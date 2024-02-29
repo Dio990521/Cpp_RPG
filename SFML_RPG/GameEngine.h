@@ -1,7 +1,7 @@
 #ifndef GAME_H
 #define GAME_H
 
-#include "State.h"
+#include "GameState.h"
 
 
 class GameEngine
@@ -14,11 +14,16 @@ private:
 	sf::Clock deltaTimeClock;
 	float deltaTime;
 
+	std::stack<State*> states;
+
 	void initWindow();
+	void initStates();
 
 public:
 	GameEngine();
 	virtual ~GameEngine();
+
+	void endApplication();
 
 	//Functions
 	void updateDeltaTime();

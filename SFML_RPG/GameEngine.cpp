@@ -22,14 +22,32 @@ void GameEngine::initWindow()
     this->window->setVerticalSyncEnabled(verticalSyncEnabled);
 }
 
+void GameEngine::initStates()
+{
+    this->states.push(new GameState(this->window));
+}
+
 GameEngine::GameEngine()
 {
     this->initWindow();
+    this->initStates();
 }
 
 GameEngine::~GameEngine() 
 {
 	delete this->window;
+
+    while (!this->states.empty())
+    {
+        delete this->states.top();
+        this->states.pop();
+    }
+        
+}
+
+void GameEngine::endApplication()
+{
+    std::cout << "End! fuck!" << std::endl;
 }
 
 /*Update the deltaTime with the time it takes to update and render one frame*/
@@ -50,11 +68,32 @@ void GameEngine::updateSFMLEvents()
 void GameEngine::update()
 {
     this->updateSFMLEvents();
+
+    if (!this->states.empty())
+    {
+        this->states.top()->update(this->deltaTime);
+        if (this->states.top()->getQuit())
+        {
+            this->states.top()->exit();
+            delete this->states.top();
+            this->states.pop();
+        }
+    }
+    else // Application end
+    {
+        this->endApplication();
+        this->window->close();
+    }
+    
+
 }
 
 void GameEngine::render()
 {
     this->window->clear();
+
+    if (!this->states.empty()) 
+        this->states.top()->render(this->window);
 
     this->window->display();
 }
